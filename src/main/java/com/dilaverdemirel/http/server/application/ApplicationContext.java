@@ -1,7 +1,9 @@
-package com.dilaverdemirel.http.server.config;
+package com.dilaverdemirel.http.server.application;
 
-import com.dilaverdemirel.http.server.application.ApplicationResourcesContext;
+import com.dilaverdemirel.http.server.application.exception.ClassLoaderException;
+import com.dilaverdemirel.http.server.application.exception.DocumentRootException;
 import com.dilaverdemirel.http.server.application.webxml.WebXml;
+import com.dilaverdemirel.http.server.application.webxml.WebXmlInitException;
 import com.dilaverdemirel.http.server.constant.Environment;
 import com.dilaverdemirel.http.server.util.StreamUtils;
 import com.dilaverdemirel.http.server.util.http.ContextParameterNamesEnumerator;
@@ -45,20 +47,25 @@ public class ApplicationContext implements ServletContext {
 
     protected WebXml webXml;
 
-    public ApplicationContext(String docRoot) throws MalformedURLException {
+    protected ApplicationSessionManager applicationSessionManager;
+
+    public ApplicationContext(String docRoot) throws DocumentRootException, ClassLoaderException, WebXmlInitException {
         this.docRoot = docRoot;
 
         resourcesContext = new ApplicationResourcesContext(docRoot);
         try {
             resourcesContext.init();
         } catch (IOException e) {
-            logger.error(e.getMessage(),e);
+            throw new DocumentRootException(e.getMessage());
         }
 
         ApplicationConfigManager configManager = new ApplicationConfigManager(docRoot);
         webXml = configManager.getWebXml();
 
         classLoader = configManager.initializeClassLoader();
+
+        applicationSessionManager = new ApplicationSessionManager();
+        BackgroundProcessor.addProcess(applicationSessionManager);
     }
 
     @Override
@@ -218,5 +225,9 @@ public class ApplicationContext implements ServletContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public ApplicationSessionManager getApplicationSessionManager() {
+        return applicationSessionManager;
     }
 }

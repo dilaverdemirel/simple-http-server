@@ -1,9 +1,10 @@
 package com.dilaverdemirel.http.server;
 
-import com.dilaverdemirel.http.server.config.ApplicationContext;
+import com.dilaverdemirel.http.server.application.ApplicationContext;
+import com.dilaverdemirel.http.server.application.exception.ClassLoaderException;
+import com.dilaverdemirel.http.server.application.exception.DocumentRootException;
+import com.dilaverdemirel.http.server.application.webxml.WebXmlInitException;
 import com.dilaverdemirel.http.server.util.StreamUtils;
-
-import java.net.MalformedURLException;
 
 /**
  * @author dilaverd on 7/12/2017.
@@ -26,12 +27,12 @@ public class TestData {
 
     public static String testClassesDirectory = StreamUtils.findRootDirectory()+"\\target\\test-data\\test-web-app-root";
 
-    public static ApplicationContext getApplicationContext(String docRoot) throws MalformedURLException {
+    public static ApplicationContext getApplicationContext(String docRoot) throws DocumentRootException, WebXmlInitException, ClassLoaderException {
         ApplicationContext applicationContext = new ApplicationContext(docRoot);
         return  applicationContext;
     }
 
-    public static ApplicationContext getApplicationContext() throws MalformedURLException {
+    public static ApplicationContext getApplicationContext() throws DocumentRootException, WebXmlInitException, ClassLoaderException {
         return  getApplicationContext(testClassesDirectory);
     }
 }

@@ -1,4 +1,4 @@
-package com.dilaverdemirel.http.server.servlet;
+package com.dilaverdemirel.http.server.servlet.exception;
 
 /**
  * @author dilaverd on 7/14/2017.

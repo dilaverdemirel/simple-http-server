@@ -1,4 +1,4 @@
-package com.dilaverdemirel.http.server.processor;
+package com.dilaverdemirel.http.server.processor.exception;
 
 /**
  * @author dilaverd on 7/14/2017.

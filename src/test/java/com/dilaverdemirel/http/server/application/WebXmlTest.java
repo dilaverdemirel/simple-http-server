@@ -1,6 +1,7 @@
-package com.dilaverdemirel.http.server.config;
+package com.dilaverdemirel.http.server.application;
 
 import com.dilaverdemirel.http.server.TestData;
+import com.dilaverdemirel.http.server.application.webxml.WebXmlInitException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ import org.junit.Test;
  */
 public class WebXmlTest {
     @Test
-    public void testInitWebXml(){
+    public void testInitWebXml() throws WebXmlInitException {
         ApplicationConfigManager configManager = new ApplicationConfigManager(TestData.testClassesDirectory);
         Assert.assertNotNull(configManager.webXml);
         Assert.assertTrue("Incorrect servlet count", configManager.webXml.getServletMappings().size() == 2);

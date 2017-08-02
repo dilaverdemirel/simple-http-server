@@ -1,6 +1,6 @@
-package com.dilaverdemirel.http.server;
+package com.dilaverdemirel.http.server.container;
 
-import com.dilaverdemirel.http.server.config.ApplicationContext;
+import com.dilaverdemirel.http.server.application.ApplicationContext;
 import com.dilaverdemirel.http.server.constant.ConstantOfContainer;
 import com.dilaverdemirel.http.server.constant.Environment;
 import com.dilaverdemirel.http.server.processor.Connector;
@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 /**
  * @author dilaverd on 7/5/2017.
  */
-public class SimpleHttpServer implements Runnable {
+public final class SimpleHttpServer implements Runnable {
     private static final Log logger = LogFactory.getLog(SimpleHttpServer.class);
 
     protected ApplicationContext applicationContext;

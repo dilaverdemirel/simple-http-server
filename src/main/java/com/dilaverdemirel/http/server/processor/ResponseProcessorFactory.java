@@ -2,6 +2,7 @@ package com.dilaverdemirel.http.server.processor;
 
 import com.dilaverdemirel.http.server.operation.Request;
 import com.dilaverdemirel.http.server.operation.Response;
+import com.dilaverdemirel.http.server.processor.exception.ResponseProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

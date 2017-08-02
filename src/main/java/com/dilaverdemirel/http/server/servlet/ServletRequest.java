@@ -3,6 +3,7 @@ package com.dilaverdemirel.http.server.servlet;
 import com.dilaverdemirel.http.server.constant.ConstantOfHeader;
 import com.dilaverdemirel.http.server.operation.Request;
 import com.dilaverdemirel.http.server.operation.SimpleCookie;
+import com.dilaverdemirel.http.server.operation.SimpleSession;
 import com.dilaverdemirel.http.server.util.StringUtils;
 import com.dilaverdemirel.http.server.util.http.HeaderNamesEnumerator;
 import com.dilaverdemirel.http.server.util.http.HeaderValuesEnumerator;
@@ -26,6 +27,7 @@ import java.util.*;
 public class ServletRequest implements HttpServletRequest {
 
     Request request;
+    protected HttpSession httpSession;
 
     /**
      * Authentication type.
@@ -168,21 +170,26 @@ public class ServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public HttpSession getSession(boolean b) {
-        //TODO : implements ServletRequest.getSession
-        return null;
+    public HttpSession getSession(boolean create) {
+        SimpleSession simpleSession = request.getApplicationContext().getApplicationSessionManager().getSession(getRequestedSessionId(), create);
+
+        if(simpleSession != null) {
+            httpSession = new Session(simpleSession, request.getApplicationContext());
+            return httpSession;
+        }
+
+        return httpSession;
     }
 
     @Override
     public HttpSession getSession() {
-        //TODO : implements ServletRequest.getSession
-        return null;
+        return httpSession;
     }
 
     @Override
     public boolean isRequestedSessionIdValid() {
         //TODO : implements ServletRequest.isRequestedSessionIdValid
-        return false;
+        return true;
     }
 
     @Override

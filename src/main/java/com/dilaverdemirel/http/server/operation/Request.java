@@ -1,6 +1,6 @@
 package com.dilaverdemirel.http.server.operation;
 
-import com.dilaverdemirel.http.server.config.ApplicationContext;
+import com.dilaverdemirel.http.server.application.ApplicationContext;
 import com.dilaverdemirel.http.server.application.webxml.ServletDefinition;
 import com.dilaverdemirel.http.server.constant.ConstantOfHeader;
 import com.dilaverdemirel.http.server.constant.Environment;

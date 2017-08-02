@@ -1,4 +1,4 @@
-package com.dilaverdemirel.http.server.config;
+package com.dilaverdemirel.http.server.application;
 
 import com.dilaverdemirel.http.server.TestData;
 import org.junit.Assert;
