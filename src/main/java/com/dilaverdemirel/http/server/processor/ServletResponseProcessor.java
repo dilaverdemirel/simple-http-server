@@ -7,9 +7,11 @@ import com.dilaverdemirel.http.server.operation.Response;
 import com.dilaverdemirel.http.server.servlet.ServletMethods;
 import com.dilaverdemirel.http.server.servlet.ServletRequest;
 import com.dilaverdemirel.http.server.servlet.ServletResponse;
+import com.dilaverdemirel.http.server.servlet.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -40,11 +42,27 @@ public class ServletResponseProcessor implements ResponseProcessor {
             String methodName = ServletMethods.valueOf(servletRequest.getMethod()).getMethodName();
             Method method = clazz.getDeclaredMethod(methodName, argTypes);
             method.invoke(clazz.newInstance(),servletRequest,servletResponse);
+
+            addSessionCookie(servletRequest, servletResponse);
+
+            servletResponse.getSimpleResponse().getCookies().forEach((name,cookieStr) ->{
+                servletResponse.addHeader(ConstantOfHeader.SET_COOKIE, cookieStr);
+            });
+
         }catch (Exception e){
             logger.error(e.getMessage(),e);
             response.setStatus(500);
         }
 
         return response.getOutput();
+    }
+
+    private void addSessionCookie(ServletRequest servletRequest, ServletResponse servletResponse) {
+        Session session = (Session)servletRequest.getSession();
+        if(session != null){
+            Cookie cookie = new Cookie(ConstantOfHeader.DEFAULT_SESSION_COOKIE_NAME, session.getId());
+            servletResponse.addCookie(cookie);
+            session.setNew(false);
+        }
     }
 }

@@ -60,18 +60,12 @@ public class SimpleCookie implements Serializable {
         buf.append("=");
         // Servlet implementation does not check anything else
 
-        version = maybeQuote2(version, buf, value,false);
+        buf.append(value);
 
-        // Add version 1 specific information
-        if (version == 1) {
-            // Version=1 ... required
-            buf.append ("; Version=1");
-
-            // Comment=comment
-            if ( comment!=null ) {
-                buf.append ("; Comment=");
-                maybeQuote2(version, buf, comment);
-            }
+        // Comment=comment
+        if ( comment!=null ) {
+            buf.append ("; Comment=");
+            maybeQuote2(version, buf, comment);
         }
 
         // Add domain information, if present
@@ -81,36 +75,29 @@ public class SimpleCookie implements Serializable {
         }
 
         // Max-Age=secs ... or use old "Expires" format
-        // TODO RFC2965 Discard
         if (maxAge >= 0) {
-            if (version > 0) {
-                buf.append ("; Max-Age=");
-                buf.append (maxAge);
-            }
+
+            buf.append ("; Max-Age=");
+            buf.append (maxAge);
             // IE6, IE7 and possibly other browsers don't understand Max-Age.
             // They do understand Expires, even with V1 cookies!
-            if (version == 0) {
-                // Wdy, DD-Mon-YY HH:MM:SS GMT ( Expires Netscape format )
-                buf.append ("; Expires=");
-                // To expire immediately we need to set the time in past
-                if (maxAge == 0)
-                    buf.append( ancientDate );
-                else
-                    OLD_COOKIE_FORMAT.get().format(
-                            new Date(System.currentTimeMillis() +
-                                    maxAge*1000L),
-                            buf, new FieldPosition(0));
-            }
+            // Wdy, DD-Mon-YY HH:MM:SS GMT ( Expires Netscape format )
+            buf.append ("; Expires=");
+            // To expire immediately we need to set the time in past
+            if (maxAge == 0)
+                buf.append( ancientDate );
+            else
+                OLD_COOKIE_FORMAT.get().format(
+                        new Date(System.currentTimeMillis() +
+                                maxAge*1000L),
+                        buf, new FieldPosition(0));
+
         }
 
         // Path=path
         if (path!=null) {
             buf.append ("; Path=");
-            if (version==0) {
-                maybeQuote2(version, buf, path);
-            } else {
-                maybeQuote2(version, buf, path, SimpleCookie.tspecials2NoSlash, false);
-            }
+            maybeQuote2(version, buf, path, SimpleCookie.tspecials2NoSlash, false);
         }
 
         // Secure

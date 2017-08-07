@@ -32,7 +32,7 @@ public class ServletResponse implements HttpServletResponse {
     @Override
     public void addCookie(javax.servlet.http.Cookie cookie) {
         final StringBuffer sb = generateCookieString(cookie);
-        addHeader(ConstantOfHeader.SET_COOKIE, sb.toString());
+        simpleResponse.getCookies().put(cookie.getName(),sb.toString());
     }
 
     public StringBuffer generateCookieString(final javax.servlet.http.Cookie cookie) {
@@ -42,7 +42,7 @@ public class ServletResponse implements HttpServletResponse {
                 (sb, cookie.getVersion(), cookie.getName(), cookie.getValue(),
                         cookie.getPath(), cookie.getDomain(), cookie.getComment(),
                         cookie.getMaxAge(), cookie.getSecure(),
-                        true);
+                        false);
 
         return sb;
     }
@@ -75,7 +75,6 @@ public class ServletResponse implements HttpServletResponse {
 
     @Override
     public String encodeRedirectUrl(String url) {
-        //TODO : implements ServletResponse.encodeRedirectUrl
         return encodeURL(url);
     }
 

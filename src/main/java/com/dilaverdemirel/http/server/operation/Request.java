@@ -30,7 +30,7 @@ public class Request {
     private InputStream input;
     private StringBuffer request = new StringBuffer(Environment.BUFFER_SIZE);
     private byte[] requestBuffer = new byte[Environment.BUFFER_SIZE];
-    private List<SimpleCookie> serverCookies = new ArrayList<SimpleCookie>();
+    private List<SimpleCookie> requestCookies = new ArrayList<SimpleCookie>();
     private HeaderCollection headerCollection = new HeaderCollection();
 
     public Request(ApplicationContext applicationContext,InputStream input, String serverText) {
@@ -43,6 +43,10 @@ public class Request {
         new StreamReader(input,request).readRequest();
         headerCollection.parseHeaders(request.toString());
         prepareRequest();
+    }
+
+    public SimpleCookie findCookie(String name){
+        return requestCookies.stream().filter(it -> it.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     private String prepareHeaderValue(String name) {
@@ -115,7 +119,7 @@ public class Request {
                     SimpleCookie serverCookie = new SimpleCookie();
                     serverCookie.setName(StringUtils.trim(keyValue[0]));
                     serverCookie.setValue(StringUtils.trim(keyValue[1]));
-                    serverCookies.add(serverCookie);
+                    requestCookies.add(serverCookie);
                 }
             }
         }
@@ -208,7 +212,8 @@ public class Request {
     }
 
     public String getHeader(String name) {
-        return null;
+        Header header = headerCollection.findHeader(name);
+        return header != null ? header.getValue() : null;
     }
 
     public String getContextPath() {
@@ -223,12 +228,12 @@ public class Request {
         this.input = input;
     }
 
-    public List<SimpleCookie> getServerCookies() {
-        return serverCookies;
+    public List<SimpleCookie> getRequestCookies() {
+        return requestCookies;
     }
 
-    public void setServerCookies(List<SimpleCookie> serverCookies) {
-        this.serverCookies = serverCookies;
+    public void setRequestCookies(List<SimpleCookie> requestCookies) {
+        this.requestCookies = requestCookies;
     }
 
     public String getQueryString() {

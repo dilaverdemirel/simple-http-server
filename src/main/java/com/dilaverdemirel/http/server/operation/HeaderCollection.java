@@ -8,7 +8,7 @@ import java.util.*;
  * @author dilaverd on 7/12/2017.
  */
 public class HeaderCollection {
-    private Set<Header> headers = new HashSet<>();
+    private List<Header> headers = new ArrayList<>();
     private List<RequestParameter> requestParameterTempList = new ArrayList<>();
     private Map<String,ArrayList<String>> requestParameters = new LinkedHashMap<>();
 
@@ -49,18 +49,9 @@ public class HeaderCollection {
                     continue;
                 }
 
+                //Detect parameters in request string(POST)
                 if(requestParameterLine){
-                    String[] splittendRequestParameters = line.split("&");
-                    if(splittendRequestParameters!= null){
-                        for (String splittendRequestParameter : splittendRequestParameters) {
-                            String pair[] = splittendRequestParameter.split("=");
-                            if(pair != null && pair.length>=2) {
-                                requestParameterTempList.add(new RequestParameter(pair[0], pair[1]));
-                            } else if(pair.length == 1){
-                                requestParameterTempList.add(new RequestParameter(pair[0], null));
-                            }
-                        }
-                    }
+                    addHeader(new Header(ConstantOfHeader.REQUEST_PARAMETERS, line));
                 }
             }
 
@@ -69,16 +60,31 @@ public class HeaderCollection {
     }
 
     private void prepareRequestParameters() {
-        requestParameterTempList.forEach( item -> {
-            ArrayList<String> param = requestParameters.get(item.getName());
-            if(param == null){
-                ArrayList<String> strings = new ArrayList<>();
-                strings.add((String) item.getValue());
-                requestParameters.put(item.getName(), strings);
-            } else {
-                param.add((String) item.getValue());
+        Header params = findHeader(ConstantOfHeader.REQUEST_PARAMETERS);
+        if(params != null && params.getValue() != null) {
+            String[] splittendRequestParameters = params.getValue().split("&");
+            if (splittendRequestParameters != null) {
+                for (String splittendRequestParameter : splittendRequestParameters) {
+                    String pair[] = splittendRequestParameter.split("=");
+                    if (pair != null && pair.length >= 2) {
+                        requestParameterTempList.add(new RequestParameter(pair[0], pair[1]));
+                    } else if (pair.length == 1) {
+                        requestParameterTempList.add(new RequestParameter(pair[0], null));
+                    }
+                }
             }
-        });
+
+            requestParameterTempList.forEach(item -> {
+                ArrayList<String> param = requestParameters.get(item.getName());
+                if (param == null) {
+                    ArrayList<String> strings = new ArrayList<>();
+                    strings.add((String) item.getValue());
+                    requestParameters.put(item.getName(), strings);
+                } else {
+                    param.add((String) item.getValue());
+                }
+            });
+        }
     }
 
     private void parseRequestHeaders(String line) {
@@ -86,9 +92,15 @@ public class HeaderCollection {
         if(infos != null && infos.length >= 3) {
             addHeader(new Header(ConstantOfHeader.METHOD, infos[0]));
             addHeader(new Header(ConstantOfHeader.URI, infos[1]));
+
+            //Detect parameters in request string(GET)
             if (infos[1] != null && infos[1].indexOf("?") != -1) {
                 String[] queryString = infos[1].split("\\?");
-                addHeader(new Header(ConstantOfHeader.QUERY_STRING, queryString[1]));
+                //Add QueryString and RequestParameters data, parse
+                if(queryString != null && queryString.length >= 2) {
+                    addHeader(new Header(ConstantOfHeader.REQUEST_PARAMETERS, queryString[1]));
+                    addHeader(new Header(ConstantOfHeader.QUERY_STRING, queryString[1]));
+                }
             } else {
                 addHeader(new Header(ConstantOfHeader.QUERY_STRING, null));
             }
@@ -96,12 +108,8 @@ public class HeaderCollection {
         }
     }
 
-    public Set<Header> getHeaders() {
+    public List<Header> getHeaders() {
         return headers;
-    }
-
-    public void setHeaders(Set<Header> headers) {
-        this.headers = headers;
     }
 
     public Map<String, ArrayList<String>> getRequestParameters() {

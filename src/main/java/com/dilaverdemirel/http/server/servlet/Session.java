@@ -30,7 +30,7 @@ public class Session implements HttpSession {
     /**
      * Flag indicating whether this session is new or not.
      */
-    protected boolean isNew = false;
+    protected boolean isNew = true;
 
 
     /**
@@ -125,5 +125,10 @@ public class Session implements HttpSession {
     @Override
     public boolean isNew() {
         return isNew;
+    }
+
+    public void setNew(boolean isNew){
+        simpleSession.setNew(isNew);
+        this.isNew = isNew;
     }
 }

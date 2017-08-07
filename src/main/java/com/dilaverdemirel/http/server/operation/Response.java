@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author dilaverd on 7/11/2017.
@@ -23,6 +25,7 @@ public class Response {
     private boolean commited = true;
     private Locale locale;
     private HeaderCollection headerCollection = new HeaderCollection();
+    private Map<String,String> cookies = new HashMap<>();
 
     public Response(Request request,OutputStream output) {
         this.output = output;
@@ -118,5 +121,9 @@ public class Response {
 
     public Request getRequest() {
         return request;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
     }
 }

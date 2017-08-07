@@ -23,13 +23,19 @@ public class ApplicationSessionManager implements BackgroundProcess {
     }
 
     public SimpleSession getSession(String sessionId,boolean create){
-        SimpleSession session = sessions.get(sessionId);
-        if(session != null && create) {
+        SimpleSession session = null;
+
+        if(sessionId != null) {
+            session = sessions.get(sessionId);
+        }
+
+        if (session == null && create) {
             String jSessionId = UUID.randomUUID().toString();
 
             session = new SimpleSession(30, jSessionId);
             sessions.put(jSessionId, session);
         }
+
         return session;
     }
 

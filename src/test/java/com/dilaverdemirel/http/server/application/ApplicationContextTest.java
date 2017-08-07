@@ -1,6 +1,9 @@
 package com.dilaverdemirel.http.server.application;
 
 import com.dilaverdemirel.http.server.TestData;
+import com.dilaverdemirel.http.server.application.exception.ClassLoaderException;
+import com.dilaverdemirel.http.server.application.exception.DocumentRootException;
+import com.dilaverdemirel.http.server.application.webxml.WebXmlInitException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +15,7 @@ import java.io.IOException;
 public class ApplicationContextTest {
 
     @Test
-    public void testCustomClassLoader() throws IOException, ClassNotFoundException {
+    public void testCustomClassLoader() throws IOException, ClassNotFoundException, DocumentRootException, WebXmlInitException, ClassLoaderException {
         ApplicationContext applicationContext = TestData.getApplicationContext();
         Assert.assertNotNull("ClassLoader is null!",applicationContext.classLoader);
         Thread.currentThread().setContextClassLoader(applicationContext.classLoader);

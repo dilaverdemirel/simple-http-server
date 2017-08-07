@@ -26,8 +26,9 @@ import java.util.*;
  */
 public class ServletRequest implements HttpServletRequest {
 
-    Request request;
+    protected Request request;
     protected HttpSession httpSession;
+    protected SimpleSession simpleSession;
 
     /**
      * Authentication type.
@@ -50,7 +51,7 @@ public class ServletRequest implements HttpServletRequest {
     @Override
     public Cookie[] getCookies() {
         if(cookies == null) {
-            List<SimpleCookie> serverCookies = request.getServerCookies();
+            List<SimpleCookie> serverCookies = request.getRequestCookies();
             if (serverCookies != null) {
                 cookies = new Cookie[serverCookies.size()];
                 int i = 0;
@@ -151,7 +152,8 @@ public class ServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestedSessionId() {
-        return request.getHeader(ConstantOfHeader.DEFAULT_SESSION_COOKIE_NAME);
+        SimpleCookie cookie = request.findCookie(ConstantOfHeader.DEFAULT_SESSION_COOKIE_NAME.toString());
+        return cookie != null ? cookie.getValue() : null;
     }
 
     @Override
@@ -171,7 +173,9 @@ public class ServletRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession(boolean create) {
-        SimpleSession simpleSession = request.getApplicationContext().getApplicationSessionManager().getSession(getRequestedSessionId(), create);
+        if(httpSession == null) {
+            simpleSession = request.getApplicationContext().getApplicationSessionManager().getSession(getRequestedSessionId(), create);
+        }
 
         if(simpleSession != null) {
             httpSession = new Session(simpleSession, request.getApplicationContext());
@@ -188,8 +192,7 @@ public class ServletRequest implements HttpServletRequest {
 
     @Override
     public boolean isRequestedSessionIdValid() {
-        //TODO : implements ServletRequest.isRequestedSessionIdValid
-        return true;
+        return simpleSession.isValid();
     }
 
     @Override
@@ -208,7 +211,7 @@ public class ServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public Object getAttribute(String s) {
+    public Object getAttribute(String name) {
         //TODO : implements ServletRequest.getAttribute
         return null;
     }

@@ -16,6 +16,7 @@ public class ConstantOfHeader {
     public static final String ACCEPT_LANGUAGE= "Accept-Language";
     public static final String LOCATION= "Location";
     public static final String HTTP_RESPONSE_DATE_HEADER = "EEE, dd MMM yyyy HH:mm:ss zzz";
+    public static final String REQUEST_PARAMETERS = "RequestParameters";
     public static final String QUERY_STRING = "QueryString";
     public static final String SERVER = "Server";
     public static final String SET_COOKIE = "Set-Cookie";

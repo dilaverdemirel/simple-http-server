@@ -15,6 +15,8 @@ public class SimpleSession implements Serializable{
     private long lastAccessedTime;
     private int sessionDuration = 30*60;
     private ConcurrentMap<String,Object> parameters;
+    private boolean isNew = true;
+    private boolean valid = true;
 
     public SimpleSession(int sessionDuration, String sessionId) {
         this.sessionDuration = sessionDuration*60;
@@ -66,5 +68,21 @@ public class SimpleSession implements Serializable{
     @Override
     public int hashCode() {
         return sessionId != null ? sessionId.hashCode() : 0;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 }
