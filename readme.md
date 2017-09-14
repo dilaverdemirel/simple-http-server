@@ -14,7 +14,6 @@ Project is a simple servlet container application.
   - commons-logging
 
 ### TODO
-  - Session Support
   - Servlet Filter Support
   - Servlet Listener Support
 
